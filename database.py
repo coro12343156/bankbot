@@ -196,5 +196,27 @@ def get_log(name:str) -> list:
     return raw
 
 
+# 全てのログを取得する関数
+def get_all_log() -> list:
+    """
+    全てのログを取得します
+    
+    Returns
+    ----------
+    logs : list
+        ログのリスト
+    """
+    conn = sqlite3.connect(db_name)
+    cur = conn.cursor()
+
+    cur.execute(f"select * from log")
+    raw = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return raw
+
+
 
 config = convert_config()

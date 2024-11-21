@@ -49,7 +49,7 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
         # ログリスト取得＆反転
         logs = reversed(db.get_log(name))
         # keywordで検索
-        logs = list(filter(lambda x: keyword in x[4], logs))
+        logs = list(filter(lambda x: keyword in str(x), logs))
 
         # pageが負だった場合
         if page < 1:
@@ -71,9 +71,9 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
         if len(logs) > 25:
             # 指定ページが最終ページの場合
             if page == len_page:
-                logs = logs[25*page-1:]
+                logs = logs[25*(page-1):]
             else:
-                logs = logs[25*page-1:25*page]
+                logs = logs[25*(page-1):25*page]
 
         dic = {
             "口座操作履歴":f"口座「{name}」の口座操作の履歴を表示します\n全{len_page}ページ中{page}ページ目"

@@ -7,4 +7,4 @@ data.db の構造
     target_guilds: スラッシュコマンドを即時に適用したいギルドidのリスト
     admins: 管理者コマンドを使用できるユーザーidのリスト
 テーブル：account (name|data)
-テーブル：log（id|content）
+テーブル：log（id|time|name|operator|content）
