@@ -8,6 +8,7 @@ import database as db
 from bank import Account
 
 import math
+import os
 
 
 # commands.Cogを継承する
@@ -284,6 +285,27 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
 
         embed = em.create(dic)
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    # コマンドのエラーをprintするイベント
+    @history.error
+    async def raise_error(self, ctx, error):
+        print(error)
+
+
+    ########### バックアップコマンド(/admin backup)
+    @admin.command(name="backup", description="データベースファイルを送信します")
+    async def backup(self, interaction:discord.Interaction):
+
+        # 管理者でない場合
+        if not func.is_admin(interaction.user):
+            embed = em.create({
+                "エラー":f"このコマンドを使用する権限を持っていません"
+            },"red")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        
+        await interaction.response.send_message(file=discord.File("./data.db"), ephemeral=True)
+
 
     # コマンドのエラーをprintするイベント
     @history.error
