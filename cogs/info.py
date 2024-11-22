@@ -48,7 +48,7 @@ class info(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 "管理者":f"{account.owner}",
                 "口座タイプ":f"{account.account_type}",
                 "残高":f"{account.bal}",
-                "メンバー":f"{", ".join(account.members)}",
+                "メンバー":f"{', '.join(account.members)}",
                 "口座状態":"**凍結中**" if account.frozen else "利用可能"
             })
         await interaction.response.send_message(embed=embed, ephemeral=True)
