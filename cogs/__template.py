@@ -21,7 +21,10 @@ class hello(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     # コマンドデコレーター(descriptionで説明が書ける)
     @app_commands.command(name="hello", description="コマンドの説明")
     async def hello(self,interaction:discord.Interaction):
-        await interaction.response.send_message("hello!")
+
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
+        await interaction.followup.send("hello!")
 
     # コマンドのエラーをprintするイベント
     @hello.error #ここの名前も変える

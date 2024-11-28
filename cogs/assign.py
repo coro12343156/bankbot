@@ -21,6 +21,8 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
     @app_commands.describe(confirm="この操作は取り消せません！！！！！　本当に実行する場合はTrueを入力してください")
     async def assign(self, interaction:discord.Interaction, name:str, user:discord.User, confirm:bool=False):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 口座情報を取得
         try:
             account = db.get_account(name)
@@ -30,7 +32,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # 口座管理者でない場合
@@ -38,7 +40,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」でこのコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 凍結されている場合
@@ -46,7 +48,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」は凍結されています"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # confirm が false の場合
@@ -54,7 +56,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"`confirm`を`True`にして下さい"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return            
 
         # 移譲先ユーザーがメンバーに含まれていない場合
@@ -62,7 +64,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"{user.mention}は口座のメンバーではありません\n口座を移譲するには両方がメンバーである必要があります"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # account.ownerを変更、ログ作成、データベースに保存
@@ -74,7 +76,7 @@ class assign(commands.Cog): #好きな名前でOK(機能がわかる名前にす
         embed = em.create({
                 "削除完了":f"口座「{name}」の管理者を{interaction.user.mention}から{user.mention}へ変更しました"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 
     # コマンドのエラーをprintするイベント

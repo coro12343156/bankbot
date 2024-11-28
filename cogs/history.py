@@ -22,6 +22,9 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
     @app_commands.describe(page="ページ")
     @app_commands.describe(keyword="指定した文字列でログを検索できます")
     async def history(self, interaction:discord.Interaction, name:str="", page:int=1, keyword:str=""):
+
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 口座名が空白の場合は個人口座を指定したものとみなす
         if name == "":
             name = interaction.user.mention
@@ -35,7 +38,7 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # メンバーに含まれていない場合
@@ -43,7 +46,7 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
             embed = em.create({
                 "エラー":f"口座「{name}」の情報を表示する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # ログリスト取得＆反転
@@ -56,7 +59,7 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
             embed = em.create({
                 "エラー":f"正しいページを入力してください"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # リスト長から算出されるページ数
@@ -84,7 +87,7 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
             dic[log[1]] = f"口座名:{log[2]}, 操作者:{log[3]}, 内容:{log[4]}"
 
         embed = em.create(dic)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 
 

@@ -23,19 +23,16 @@ class restart(commands.Cog): #好きな名前でOK(機能がわかる名前に�
     @app_commands.describe(sync="スラッシュコマンドを同期するかどうか")
     async def restart(self,interaction:discord.Interaction, sync:bool=False):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user): 
             embed = em.create({
                 "権限エラー":"管理者ではないので使用できません！"
             },"red")
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
-
-        embed = em.create({
-            "/restart":"botを再読み込みします"
-        })
-        await interaction.response.send_message(embed=embed, ephemeral=True)
 
         # Cog一覧(cogsフォルダの.pyファイル一覧)を取得
         cogs = [file for file in os.listdir("./cogs") if not file.startswith("_")]
@@ -56,7 +53,7 @@ class restart(commands.Cog): #好きな名前でOK(機能がわかる名前に�
         embed = em.create({
             "再読み込み完了":"botの再読み込みが完了しました！"
         },"green")
-        await interaction.channel.send(embed=embed, delete_after=10)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 
 async def setup(bot):

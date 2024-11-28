@@ -22,12 +22,14 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
     @app_commands.describe(description="送金内容")
     async def pay(self, interaction:discord.Interaction, name:str, target:str, amount:int, description:str=""):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 送金元と送金先が同じな場合
         if name == target:
             embed = em.create({
                 "エラー":f"送金元と送金先の口座を同じにすることはできません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # 口座情報を取得
@@ -39,7 +41,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
         
         # 口座情報を取得
@@ -51,7 +53,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
                 embed = em.create({
                     "エラー":f"口座「{target}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # メンバーに含まれていない場合
@@ -59,7 +61,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
             embed = em.create({
                 "エラー":f"口座「{name}」でこのコマンドを実行する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 凍結されている場合
@@ -67,7 +69,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
             embed = em.create({
                 "エラー":f"口座「{name}」は凍結されています"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 送金額が正でない場合
@@ -75,7 +77,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
             embed = em.create({
                 "エラー":f"送金額は1以上の整数を指定してください。"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 残高が足りない場合
@@ -83,7 +85,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
             embed = em.create({
                 "エラー":f"口座「{name}」の残高が足りません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 送金元から送金額を引く
@@ -93,7 +95,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
             embed = em.create({
                 "エラー":f"不適切な値か、口座の残高が負になるような値が入力されました"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 送金先に送金額を足す
@@ -113,7 +115,7 @@ class pay(commands.Cog): #好きな名前でOK(機能がわかる名前にする
                 "金額":f'{amount}',
                 "送金内容":f'{description}',
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 
     # コマンドのエラーをprintするイベント

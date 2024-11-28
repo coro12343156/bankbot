@@ -19,6 +19,8 @@ class info(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(name="口座名")
     async def info(self, interaction:discord.Interaction, name:str=""):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 口座名が空白の場合は個人口座を指定したものとみなす
         if name == "":
             name = interaction.user.mention
@@ -32,7 +34,7 @@ class info(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # メンバーに含まれていない場合
@@ -40,7 +42,7 @@ class info(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"口座「{name}」の情報を表示する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         embed = em.create({
@@ -51,7 +53,7 @@ class info(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 "メンバー":f"{', '.join(account.members)}",
                 "口座状態":"**凍結中**" if account.frozen else "利用可能"
             })
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
 
     # コマンドのエラーをprintするイベント

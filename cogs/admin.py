@@ -28,12 +28,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(name="口座名　個人口座では強制的にユーザー名になります")
     async def _open(self, interaction:discord.Interaction, owner:discord.User, account_type:str, name:str=""):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return            
 
         # 口座の種類が規定のもの以外だった場合
@@ -42,7 +44,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"口座の種類は** {', '.join(account_type_list)} **のいずれかです"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # 個人口座だった場合、強制的に口座名をユーザー名にする
@@ -54,7 +56,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"口座名を入力してください"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 個人口座ではないにもかかわらず、口座名にユーザー名を指定した場合
@@ -62,7 +64,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"個人口座でない場合、口座名にユーザーを指定することはできません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # Accountインスタンスを生成、ログ作成、データベースに保存
@@ -75,13 +77,13 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"口座「{name}」は既に存在しています"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         embed = em.create({
                 "口座作成完了":f"口座「{name}」の作成が完了しました\n`/info [口座名]`（個人口座の場合`/info`でOK）で口座情報が確認できます"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @_open.error
@@ -94,12 +96,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(name="口座名")
     async def info(self, interaction:discord.Interaction, name:str):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # 口座情報を取得
@@ -111,7 +115,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         embed = em.create({
@@ -121,7 +125,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 "残高":f"{account.bal}",
                 "メンバー":f"{', '.join(account.members)}"
             })
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @info.error
@@ -135,12 +139,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(frozen="凍結されているか")
     async def freeze(self, interaction:discord.Interaction, name:str, frozen:bool):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # 口座情報を取得
@@ -152,7 +158,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # account.membersに追加、ログ作成、データベースに保存
@@ -164,7 +170,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
         embed = em.create({
                 "変更完了":f"口座「{name}」の凍結状態を{frozen}に変更しました"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @freeze.error
@@ -178,12 +184,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(amount="付与量")
     async def give(self, interaction:discord.Interaction, name:str, amount:int):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # 口座情報を取得
@@ -195,7 +203,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
         
         # 通貨付与
@@ -205,7 +213,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"不適切な値か、口座の残高が負になるような値が入力されました"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # ログ作成、データベースに保存
@@ -216,7 +224,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
         embed = em.create({
                 "変更完了":f"口座「{name}」に{amount}付与しました"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @give.error
@@ -231,12 +239,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @app_commands.describe(keyword="指定した文字列でログを検索できます")
     async def history(self, interaction:discord.Interaction, name:str="", page:int=1, keyword:str=""):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # ログリスト取得＆反転
@@ -256,7 +266,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             embed = em.create({
                 "エラー":f"正しいページを入力してください"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # リスト長から算出されるページ数
@@ -284,7 +294,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             dic[log[1]] = f"口座名:{log[2]}, 操作者:{log[3]}, 内容:{log[4]}"
 
         embed = em.create(dic)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @history.error
@@ -296,15 +306,17 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @admin.command(name="backup", description="データベースファイルを送信します")
     async def backup(self, interaction:discord.Interaction):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 管理者でない場合
         if not func.is_admin(interaction.user):
             embed = em.create({
                 "エラー":f"このコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
-        await interaction.response.send_message(file=discord.File("./data.db"), ephemeral=True)
+        await interaction.followup.send(file=discord.File("./data.db"), ephemeral=True)
 
 
     # コマンドのエラーをprintするイベント

@@ -24,6 +24,8 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
     @app_commands.describe(user="追加するユーザー")
     async def add(self, interaction:discord.Interaction, name:str, user:discord.User):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 口座情報を取得
         try:
             account = db.get_account(name)
@@ -33,7 +35,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # 口座管理者でない場合
@@ -41,7 +43,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」でこのコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 凍結されている場合
@@ -49,7 +51,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」は凍結されています"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 個人口座の場合
@@ -57,7 +59,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」は個人口座なのでメンバーの追加はできません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 既ににいる場合
@@ -65,7 +67,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"{user.mention}は既に口座「{name}」のメンバーです"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # account.membersに追加、ログ作成、データベースに保存
@@ -77,7 +79,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
         embed = em.create({
                 "追加完了":f"口座「{name}」のメンバーに{user.mention}を追加しました"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @add.error
@@ -91,6 +93,8 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
     @app_commands.describe(user="削除するユーザー")
     async def remove(self, interaction:discord.Interaction, name:str, user:discord.User):
 
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # 口座情報を取得
         try:
             account = db.get_account(name)
@@ -100,7 +104,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
                 embed = em.create({
                     "エラー":f"口座「{name}」は存在しません"
                 },"red")
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
 
         # 口座管理者でない場合
@@ -108,7 +112,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」でこのコマンドを使用する権限を持っていません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 凍結されている場合
@@ -116,7 +120,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座「{name}」は凍結されています"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
         # 管理者はメンバーから消せない
@@ -124,7 +128,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"口座の管理者が自らをメンバーから削除することはできません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return             
         
         # 既にいない場合
@@ -132,7 +136,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
             embed = em.create({
                 "エラー":f"{user.mention}は既に口座「{name}」のメンバーではありません"
             },"red")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
         # account.membersに追加、ログ作成、データベースに保存
@@ -144,7 +148,7 @@ class member(commands.Cog): #好きな名前でOK(機能がわかる名前にす
         embed = em.create({
                 "削除完了":f"口座「{name}」のメンバーから{user.mention}を削除しました"
             }, "green")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     # コマンドのエラーをprintするイベント
     @remove.error
