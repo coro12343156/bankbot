@@ -22,8 +22,7 @@ class ready(commands.Cog):
         result = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
 
         # スラッシュコマンドを反映させる
-        for g in db.config["target_guilds"]:
-            guild = await self.bot.fetch_guild(g)
+        for guild in self.bot.guilds:
             self.bot.tree.copy_global_to(guild=guild)
             await self.bot.tree.sync(guild=guild)
         print("slash commands has been synced!!")

@@ -18,8 +18,9 @@ class sync(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
 
 	
     # コマンドデコレーター(descriptionで説明が書ける)
-    @app_commands.command(name="sync", description="botをグローバルsyncします")
-    async def sync(self,interaction:discord.Interaction):
+    @app_commands.command(name="sync", description="botをsyncします")
+    @app_commands.describe(GLOBAL="グローバルかどうか")
+    async def sync(self,interaction:discord.Interaction, GLOBAL:bool=False):
 
         await interaction.response.defer(ephemeral=True, thinking=True)
 
@@ -31,12 +32,18 @@ class sync(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
-        # スラッシュコマンドを反映させる（選択されたなら）
-        await self.bot.tree.sync()
-        print("slash commands has been synced!! (global sync)")
+        # スラッシュコマンドを反映させる
+        if GLOBAL:
+            await self.bot.tree.sync()
+            print("slash commands has been synced!! (global sync)")
+        else:
+            for guild in self.bot.guilds:
+                self.bot.tree.copy_global_to(guild=guild)
+                await self.bot.tree.sync(guild=guild)
+            print("slash commands has been synced!!")
 
         embed = em.create({
-            "sync完了":"コマンドがglobal syncされました！"
+            "sync完了":"コマンドがsyncされました！"
         },"green")
         await interaction.followup.send(embed=embed, ephemeral=True)
 

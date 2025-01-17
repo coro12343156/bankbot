@@ -42,14 +42,6 @@ class restart(commands.Cog): #好きな名前でOK(機能がわかる名前に�
             await self.bot.reload_extension(f"cogs.{cog}".replace(".py",""))
             print(f"cogs.{cog} has been restarted")
 
-        # スラッシュコマンドを反映させる（選択されたなら）
-        if sync:
-            for g in db.config["target_guilds"]:
-                guild = await self.bot.fetch_guild(g)
-                self.bot.tree.copy_global_to(guild=guild)
-                await self.bot.tree.sync(guild=guild)
-            print("slash commands has been synced!!")
-
         embed = em.create({
             "再読み込み完了":"botの再読み込みが完了しました！"
         },"green")
