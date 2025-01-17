@@ -8,11 +8,6 @@ class ping(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     def __init__(self, bot):
         self.bot = bot
 
-
-    # イベントリスナー(ボットが起動したときやメッセージを受信したとき等)
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print("Cog ready!")
 	
     # コマンドデコレーター(descriptionで説明が書ける)
     @app_commands.command(name="ping", description="pingします")
