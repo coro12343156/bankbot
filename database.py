@@ -10,7 +10,6 @@ import os
 root = os.path.dirname(__file__)
 db_name = os.path.join(root, "data.db")
 
-
 # データベースを操作する関数を定義するファイル
 
 

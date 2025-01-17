@@ -249,52 +249,8 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
-        # ログリスト取得＆反転
-        if name == "": # 口座指定されていない場合、全ての口座ログを対象とする
-            logs = reversed(db.get_all_log())
-        else:
-            logs = reversed(db.get_log(name))
-
-        # keywordが空白でないなら検索
-        if keyword != "":
-            logs = list(filter(lambda x: keyword in str(x), logs))
-        else: # 検索しない場合、logsは型がlist_reverseiteratorなので、listになおす
-            logs = list(logs)
-
-        # pageが負だった場合
-        if page < 1:
-            embed = em.create({
-                "エラー":f"正しいページを入力してください"
-            },"red")
-            await interaction.followup.send(embed=embed, ephemeral=True)
-            return
-        
-        # リスト長から算出されるページ数
-        len_page = math.ceil(len(logs)/25)
-
-        # 指定されたpageがページ数を超えていた場合
-        if page > len_page:
-            page = len_page
-
-        # そもそもlogsが25個以下の場合、その全てを表示する
-        # そうでなければ
-        if len(logs) > 25:
-            # 指定ページが最終ページの場合
-            if page == len_page:
-                logs = logs[25*(page-1):]
-            else:
-                logs = logs[25*(page-1):25*page]
-
-        dic = {
-            "口座操作履歴":f"該当する口座操作履歴を表示します\n全{len_page}ページ中{page}ページ目"
-        }
-
-        # 各ログに対してembedのフィールドを設ける
-        for log in logs:
-            dic[log[1]] = f"口座名:{log[2]}, 操作者:{log[3]}, 内容:{log[4]}"
-
-        embed = em.create(dic)
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        embed, view = func.make_history(page, name, keyword)
+        await interaction.followup.send(embed=embed, ephemeral=True, view=view)
 
     # コマンドのエラーをprintするイベント
     @history.error
@@ -323,6 +279,14 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
     @history.error
     async def raise_error(self, ctx, error):
         print(error)
+
+    
+
+
+
+        
+
+        
 
 
 

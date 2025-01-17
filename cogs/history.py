@@ -48,46 +48,26 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
             },"red")
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
+        
+        embed, view = func.make_history(page, name, keyword)
+        await interaction.followup.send(embed=embed, ephemeral=True, view=view)
 
-        # ログリスト取得＆反転
-        logs = reversed(db.get_log(name))
-        # keywordで検索
-        logs = list(filter(lambda x: keyword in str(x), logs))
 
-        # pageが負だった場合
-        if page < 1:
-            embed = em.create({
-                "エラー":f"正しいページを入力してください"
-            },"red")
-            await interaction.followup.send(embed=embed, ephemeral=True)
+    # インタラクション
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction:discord.Interaction):
+        data = func.parse_interaction(interaction)
+
+        # 違うコマンドのinteractionは弾く
+        if data["command"] != "history":
             return
         
-        # リスト長から算出されるページ数
-        len_page = math.ceil(len(logs)/25)
+        ID = data["id"]
 
-        # 指定されたpageがページ数を超えていた場合
-        if page > len_page:
-            page = len_page
-
-        # そもそもlogsが25個以下の場合、その全てを表示する
-        # そうでなければ
-        if len(logs) > 25:
-            # 指定ページが最終ページの場合
-            if page == len_page:
-                logs = logs[25*(page-1):]
-            else:
-                logs = logs[25*(page-1):25*page]
-
-        dic = {
-            "口座操作履歴":f"口座「{name}」の口座操作の履歴を表示します\n全{len_page}ページ中{page}ページ目"
-        }
-
-        # 各ログに対してembedのフィールドを設ける
-        for log in logs:
-            dic[log[1]] = f"口座名:{log[2]}, 操作者:{log[3]}, 内容:{log[4]}"
-
-        embed = em.create(dic)
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        # ページ変える
+        if ID == "change_page":
+            embed, view = func.make_history(data["page"], data["name"], data["keyword"])
+            await interaction.response.send_message(embed=embed, ephemeral=True, view=view)
 
 
 
