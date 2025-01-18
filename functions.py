@@ -6,6 +6,7 @@ import json
 import math
 import string
 import random
+import gc
 
 # bot全体にgeneralな関数を定義するファイル
 
@@ -77,7 +78,9 @@ def load_object(key:str) -> object:
     obj : object
         保存したオブジェクト
     """
-    return datas[key]
+    obj = datas[key]
+    del datas[key]
+    return obj
 
 
 
