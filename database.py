@@ -149,7 +149,7 @@ def create_log(operator:str, name:str, content:str) -> str:
     log_id : str
         ログid
     """
-    # ログidを作成する（英数字）
+    # ログidを作成する（英数字16文字）
     # ログidが既存のログとかぶったときの処理は書いてません
     # ログidのパターンは約10^29通りらしいからね、まあかぶらないでしょ（）
     log_id = ''.join(random.choices(string.ascii_letters + string.digits, k=16))

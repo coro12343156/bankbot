@@ -5,7 +5,7 @@ import discord
 import embed as em
 import functions as func
 import database as db
-from bank import Account
+from bank import Account, flter
 
 import math
 
@@ -56,19 +56,32 @@ class history(commands.Cog): #好きな名前でOK(機能がわかる名前に�
     # インタラクション
     @commands.Cog.listener()
     async def on_interaction(self, interaction:discord.Interaction):
-        data = func.parse_interaction(interaction)
+        try:
+            data = func.parse_interaction(interaction)
 
-        # 違うコマンドのinteractionは弾く
-        if data["command"] != "history":
-            return
-        
-        ID = data["id"]
+            # interactionが期限切れの場合
+            if data == None:
+                embed = em.create({
+                    "エラー":f"このインタラクションは期限切れです"
+                },"red")
+                await interaction.response.send_message(embed=embed, ephemeral=True, delete_after=5)
 
-        # ページ変える
-        if ID == "change_page":
-            embed, view = func.make_history(data["page"], data["name"], data["keyword"])
-            await interaction.response.send_message(embed=embed, ephemeral=True, view=view)
+            # 違うコマンドのinteractionは弾く
+            if data["command"] != "history":
+                return
+            
+            ID = data["id"]
 
+            # ページ変える
+            if ID == "change_page":
+                embed, view = func.make_history(data["page"], data["name"], data["keyword"])
+                await interaction.response.send_message(embed=embed, ephemeral=True, view=view)
+            # フィルター
+            if ID == "filter":
+                embed, view = func.make_history(data["page"], data["name"], data["keyword"], FILTERS=data["values"])
+                await interaction.response.send_message(embed=embed, ephemeral=True, view=view)
+        except Exception as e:
+            print(f"{e.__class__.__name__}: {e}")
 
 
     # コマンドのエラーをprintするイベント
