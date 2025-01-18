@@ -68,7 +68,7 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             return
 
         # Accountインスタンスを生成、ログ作成、データベースに保存
-        account = Account(name, owner.mention, account_type)
+        account = Account(name, owner.mention, account_type, db.config["initial_bal"])
         log_id = db.create_log("admin", name, f'口座「{name}」を作成')
         account.logs.append(log_id) #作成したログと口座の結びつけ
         try:
@@ -276,10 +276,48 @@ class admin(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
 
 
     # コマンドのエラーをprintするイベント
-    @history.error
+    @backup.error
     async def raise_error(self, ctx, error):
         print(error)
 
+
+
+    ########### 設定変更コマンド(/admin config)
+    @admin.command(name="config", description="botの設定を変更します")
+    @app_commands.describe(key="設定項目")
+    @app_commands.describe(value="内容")
+    async def config(self, interaction:discord.Interaction, key:str, value:str):
+
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
+        # 管理者でない場合
+        if not func.is_admin(interaction.user):
+            embed = em.create({
+                "エラー":f"このコマンドを使用する権限を持っていません"
+            },"red")
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+        
+        before = db.set_config(key, value)
+
+        # 設定項目が存在しない場合
+        if before == []:
+            embed = em.create({
+                "エラー":f"{key}という設定項目は存在しません"
+            },"red")
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+        
+        embed = em.create({
+            "変更完了":f"`{key}`を`{before[0][2]}`から`{value}`に変更しました"
+        },"green")
+        await interaction.followup.send(embed=embed, ephemeral=True)
+        return
+
+    # コマンドのエラーをprintするイベント
+    @config.error
+    async def raise_error(self, ctx, error):
+        print(error)
     
 
 

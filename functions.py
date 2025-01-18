@@ -111,7 +111,7 @@ def load_object(key:str) -> object | None:
     # ２分以上経過したオブジェクトを削除
     now = datetime.datetime.now()
     for k, v in c.items():
-        if now > v + datetime.timedelta(minutes=2):
+        if now > v + datetime.timedelta(seconds=db.config["object_delete_seconds"]):
             del data_object[k]
             del data_created_at[k]
 

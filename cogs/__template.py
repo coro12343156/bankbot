@@ -6,6 +6,9 @@ import embed as em
 import functions as func
 import database as db
 
+import traceback
+import sys
+
 
 # commands.Cogを継承する
 class hello(commands.Cog): #好きな名前でOK(機能がわかる名前にすると良い)

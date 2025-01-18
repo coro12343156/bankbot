@@ -222,4 +222,37 @@ def get_all_log() -> list:
 
 
 
+# 設定関数
+def set_config(key:str, value:str):
+    """
+    ログを取得します
+
+    Parameters
+    ----------
+    name : str
+        configのキー
+    value : str
+        configの内容
+
+    Returns
+    ----------
+    logs : list
+        ログのリスト
+    """
+    conn = sqlite3.connect(db_name)
+    cur = conn.cursor()
+
+    cur.execute(f"select * from config where key = '{key}'")
+    raw = cur.fetchall()
+
+    cur.execute(f'update config set value = "{value}" where key = "{key}"')
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return raw
+
+
+
 config = convert_config()

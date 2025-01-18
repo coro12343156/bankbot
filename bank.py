@@ -25,7 +25,7 @@ class Account():
     frozen : bool
         凍結されている -> True
     """
-    def __init__(self, name:str, owner:int, account_type:str, bal:int=0, members:list=[], logs:list=[], frozen:bool=False):
+    def __init__(self, name:str, owner:int, account_type:str, bal:int, members:list=[], logs:list=[], frozen:bool=False):
         self.name = name
         self.owner = owner
         self.account_type = account_type
