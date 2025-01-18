@@ -37,7 +37,6 @@ def parse_interaction(interaction:discord.Interaction) -> dict | None:
     None
     """
     data = interaction.data
-    print(interaction.type, data)
     # button or selectmenu
     if interaction.type == discord.InteractionType.component:
             # ボタン
