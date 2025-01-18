@@ -20,8 +20,7 @@ class restart(commands.Cog): #好きな名前でOK(機能がわかる名前に�
 	
     # コマンドデコレーター(descriptionで説明が書ける)
     @app_commands.command(name="restart", description="botを再読み込みします")
-    @app_commands.describe(sync="スラッシュコマンドを同期するかどうか")
-    async def restart(self,interaction:discord.Interaction, sync:bool=False):
+    async def restart(self,interaction:discord.Interaction):
 
         await interaction.response.defer(ephemeral=True, thinking=True)
 

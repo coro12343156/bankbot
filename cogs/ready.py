@@ -10,6 +10,9 @@ import os
 import string
 import random
 
+import traceback
+import sys
+
 
 class ready(commands.Cog):
     def __init__(self, bot):
@@ -21,11 +24,13 @@ class ready(commands.Cog):
         ## ランダムな16文字を生成
         result = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
 
-        # スラッシュコマンドを反映させる
-        for guild in self.bot.guilds:
-            self.bot.tree.copy_global_to(guild=guild)
-            await self.bot.tree.sync(guild=guild)
-        print("slash commands has been synced!!")
+        # # スラッシュコマンドを反映させる
+        # print("start syncing")
+        # for guild in self.bot.guilds:
+        #     self.bot.tree.copy_global_to(guild=guild)
+        #     await self.bot.tree.sync(guild=guild)
+
+        # print("slash commands has been synced!!")
 
         # コンソールに出力
         os.environ['PASS'] = result

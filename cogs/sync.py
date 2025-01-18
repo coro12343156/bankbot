@@ -19,8 +19,8 @@ class sync(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
 	
     # コマンドデコレーター(descriptionで説明が書ける)
     @app_commands.command(name="sync", description="botをsyncします")
-    @app_commands.describe(GLOBAL="グローバルかどうか")
-    async def sync(self,interaction:discord.Interaction, GLOBAL:bool=False):
+    @app_commands.describe(globe="グローバルかどうか")
+    async def sync(self,interaction:discord.Interaction, globe:bool=False):
 
         await interaction.response.defer(ephemeral=True, thinking=True)
 
@@ -33,7 +33,7 @@ class sync(commands.Cog): #好きな名前でOK(機能がわかる名前にす�
             return
 
         # スラッシュコマンドを反映させる
-        if GLOBAL:
+        if globe:
             await self.bot.tree.sync()
             print("slash commands has been synced!! (global sync)")
         else:
